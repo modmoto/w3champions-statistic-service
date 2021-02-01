@@ -16,17 +16,20 @@ namespace W3ChampionsStatisticService.Ladder
         private readonly IPlayerRepository _playerRepository;
         private readonly RankQueryHandler _rankQueryHandler;
         private readonly PlayerAkaProvider _playerAkaProvider;
+        private readonly PersonalSettingsProvider _personalSettingsProvider;
 
         public LadderController(
             IRankRepository rankRepository,
             IPlayerRepository playerRepository,
             RankQueryHandler rankQueryHandler,
-            PlayerAkaProvider playerAkaProvider)
+            PlayerAkaProvider playerAkaProvider,
+            PersonalSettingsProvider personalSettingsProvider)
         {
             _rankRepository = rankRepository;
             _playerRepository = playerRepository;
             _rankQueryHandler = rankQueryHandler;
             _playerAkaProvider = playerAkaProvider;
+            _personalSettingsProvider = personalSettingsProvider;
         }
 
         [HttpGet("search")]
@@ -60,7 +63,8 @@ namespace W3ChampionsStatisticService.Ladder
             {
                 foreach (var playerInLadder in entityInLadder.PlayersInfo)
                 {
-                    playerInLadder.PlayerAkaData = _playerAkaProvider.GetPlayerAkaData(playerInLadder.BattleTag.ToLower());
+                    var settings = _personalSettingsProvider.getSettingsOf(playerInLadder.BattleTag);
+                    playerInLadder.PlayerAkaData = _playerAkaProvider.GetAkaDataByPreferences(playerInLadder.BattleTag.ToLower(), settings);
                 }
             }
 

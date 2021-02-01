@@ -29,6 +29,19 @@ namespace W3ChampionsStatisticService.Services
             }
         }
 
+        public PersonalSettings.PersonalSetting getSettingsOf(string battleTag)
+        {
+            try 
+            {
+                var settings = personalSettingsCache.GetCachedData().Find(s => s.Id == battleTag);
+                return settings;
+            }
+            catch
+            {
+                return new PersonalSettings.PersonalSetting(battleTag);
+            }
+        }
+
         private List<PersonalSettings.PersonalSetting> FetchPersonalSettingsSync()
         {
             try 
